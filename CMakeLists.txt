@@ -3,4 +3,4 @@ project(Paging_Replacement)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Paging_Replacement main.cpp)
+add_executable(Paging_Replacement main.cpp core/LinkedList.cpp core/LinkedList.h core/PageReplacer.cpp core/PageReplacer.h)
