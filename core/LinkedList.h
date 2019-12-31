@@ -32,14 +32,8 @@ void initList(LinkedList *l);
 
 void add(LinkedList *l, TYPE v);
 
-int search(LinkedList *l, TYPE v);
+bool search(LinkedList *l, TYPE v);
 
-void _OPTIMAL(LinkedList *l, TYPE v);
-
-void _FIFO(LinkedList *l, TYPE v);
-
-void _LRU(LinkedList *l, TYPE v);
-
-void _CLOCK(LinkedList *l, TYPE v);
+void _CMD(const std::string &_policy, LinkedList *_l, const int &_pRef);
 
 #endif //PAGING_REPLACEMENT_LINKEDLIST_H

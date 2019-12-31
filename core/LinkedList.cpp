@@ -3,10 +3,51 @@
 //
 
 #include <cstdlib>
+#include <string>
 #include "LinkedList.h"
+
+#define CMD_CNT 4
+
+using namespace std;
 
 int ARRIVAL_TIME = 0;
 Node *clock_ptr;
+
+void _OPTIMAL(LinkedList *l, TYPE v);
+
+void _FIFO(LinkedList *l, TYPE v);
+
+void _LRU(LinkedList *l, TYPE v);
+
+void _CLOCK(LinkedList *l, TYPE v);
+
+/**
+ * @brief commands function.
+ */
+void (*cmd_fn[])(LinkedList *l, TYPE v) = {
+        &_OPTIMAL,
+        &_FIFO,
+        &_LRU,
+        &_CLOCK
+};
+
+/**
+ * @brief commands string.
+ */
+string cmd_name[CMD_CNT];
+
+void _CMD(const string &_policy, LinkedList *_l, const int &_pRef) {
+    for (int i = 0; i < CMD_CNT; i++)
+        if (_policy == cmd_name[i])
+            return (*cmd_fn[i])(_l, _pRef);
+}
+
+void initCommands(string *cmd) {
+    cmd[0] = "OPTIMAL";
+    cmd[1] = "FIFO";
+    cmd[2] = "LRU";
+    cmd[3] = "CLOCK";
+}
 
 Node *initNode(const int &_v) {
     Node *node = (Node *) malloc(sizeof(Node));
@@ -20,6 +61,7 @@ Node *initNode(const int &_v) {
 void initList(LinkedList *l) {
     l->head = l->tail = clock_ptr = nullptr;
     l->length = 0;
+    initCommands(cmd_name);
 }
 
 void add(LinkedList *l, TYPE v) {
@@ -38,21 +80,45 @@ void add(LinkedList *l, TYPE v) {
     }
 }
 
-int search(LinkedList *l, TYPE v) {
+bool search(LinkedList *l, TYPE v) {
     Node *tmp = l->head;
     while (tmp != nullptr) {
         if (tmp->value == v) {
             tmp->arrival_t = ++ARRIVAL_TIME;
             tmp->clockPin = 1;
-            return 1;
+            return true;
         }
         tmp = tmp->next;
     }
-    return 0;
+    return false;
+}
+
+bool searchNext(Node *n, TYPE v) {
+    Node *tmp = n;
+    while (tmp != nullptr) {
+        if (tmp->value == v) {
+            tmp->arrival_t = ++ARRIVAL_TIME;
+            tmp->clockPin = 1;
+            return true;
+        }
+        tmp = tmp->next;
+    }
+    return false;
 }
 
 void _OPTIMAL(LinkedList *l, TYPE v) {
-    // TODO
+    Node *tmp = l->head;
+    Node *OPTIMAL = l->head;
+
+    while (tmp != nullptr) {
+        if (tmp->arrival_t > OPTIMAL->arrival_t) {
+            OPTIMAL = tmp;
+            break;
+        }
+        tmp = tmp->next;
+    }
+    OPTIMAL->value = v;
+    OPTIMAL->arrival_t = ++ARRIVAL_TIME;
 }
 
 void _FIFO(LinkedList *l, TYPE v) {

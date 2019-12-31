@@ -15,7 +15,7 @@
 
 using namespace std;
 
-ReplacementPolicy readReplacementPolicy(ReplacementPolicy &policy);
+string readReplacementPolicy(string &_policy);
 
 void readRequests(LinkedList *r);
 
@@ -33,8 +33,8 @@ int main() {
         return EXIT_FAILURE;
 
     // read replacement policy.
-    ReplacementPolicy policy;
-    if (readReplacementPolicy(policy) == NONE)
+    string policy;
+    if (readReplacementPolicy(policy).empty())
         return EXIT_FAILURE;
 
     PageReplacer pr(policy, cntPages);
@@ -43,27 +43,19 @@ int main() {
     initList(&requests);
     readRequests(&requests);
 
-    printHeader(toString(policy));
+    printHeader(policy);
     int cntPageFaults = getPageFaults(&requests, pr);
     printFooter(cntPageFaults);
 
     return EXIT_SUCCESS;
 }
 
-ReplacementPolicy readReplacementPolicy(ReplacementPolicy &policy) {
-    string r_policy;
-    cin >> r_policy;
-    if (r_policy == "OPTIMAL")
-        policy = OPTIMAL;
-    else if (r_policy == "FIFO")
-        policy = FIFO;
-    else if (r_policy == "LRU")
-        policy = LRU;
-    else if (r_policy == "CLOCK")
-        policy = CLOCK;
-    else
-        return NONE;
-    return policy;
+string readReplacementPolicy(string &_policy) {
+    cin >> _policy;
+    if (_policy == "OPTIMAL" || _policy == "FIFO"
+        || _policy == "LRU" || _policy == "CLOCK")
+        return _policy;
+    return "";
 }
 
 void readRequests(LinkedList *r) {
